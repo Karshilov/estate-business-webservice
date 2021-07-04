@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npm install && cross-env NODE_ENV=development nodemon --tls-min-v1.0 app.js --mode=development --port=3000"
+    "dev": "npm install && cross-env NODE_ENV=development nodemon --tls-min-v1.0 app.js --mode=development --port=3383",
+    "start": "npm install && cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 NODE_ENV=production nodemon --tls-min-v1.0 app.js --mode=production --port=3383"
   },
   "keywords": [],
   "author": "",
