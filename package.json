@@ -1,0 +1,28 @@
+{
+  "name": "estate-business-webservice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm install && cross-env NODE_ENV=development nodemon --tls-min-v1.0 app.js --mode=development --port=3000"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chalk": "^2.4.2",
+    "commander": "^8.0.0",
+    "cross-env": "^7.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "kf-router": "^2.2.2",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-bodyparser": "^4.3.0",
+    "minio": "^7.0.18",
+    "moment": "^2.29.1",
+    "nodemon": "^2.0.9",
+    "pg": "^8.6.0",
+    "querystring": "^0.2.1"
+  }
+}
