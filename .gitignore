@@ -1,2 +1,3 @@
 database/postgre-secret.js
 node_modules/
+.vscode/

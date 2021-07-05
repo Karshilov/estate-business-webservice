@@ -2,7 +2,7 @@ const koa = require('koa')
 const app = new koa()
 const program = require('commander')
 const kf = require('kf-router')
-const fs = require('fs')
+// const fs = require('fs')
 const chalk = require('chalk')
 
 

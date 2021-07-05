@@ -15,6 +15,7 @@
     "chalk": "^2.4.2",
     "commander": "^8.0.0",
     "cross-env": "^7.0.3",
+    "eslint": "^7.30.0",
     "jsonwebtoken": "^8.5.1",
     "kf-router": "^2.2.2",
     "koa": "^2.13.1",
