@@ -24,6 +24,7 @@
     "moment": "^2.29.1",
     "nodemon": "^2.0.9",
     "pg": "^8.6.0",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "uuid": "^8.3.2"
   }
 }
