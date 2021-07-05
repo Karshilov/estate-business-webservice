@@ -16,7 +16,7 @@ program
 // 将 moment 导出到全局作用域
 global.moment = require('moment')
 // 运行参数导出到全局
-global.program = program
+global.program = program.opts()
 
 // 控制台输出的样式颜色
 global.chalkColored = new chalk.constructor({ level: 2 })
@@ -82,4 +82,4 @@ app.use(require('./middleware/axios'))
   负责调用路由处理程序执行处理的中间件。
 */
 app.use(kf())
-app.listen(program.port)
+app.listen(global.program.port)
