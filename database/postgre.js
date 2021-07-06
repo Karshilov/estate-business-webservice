@@ -1,5 +1,5 @@
 //@ts-check
-const { Pool, Client } = require('pg')
+const { Pool } = require('pg')
 const secret = require('./postgre-secret')
 
 let connectionPool = null
