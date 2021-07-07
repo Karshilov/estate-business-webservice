@@ -76,5 +76,6 @@ module.exports = async (ctx, next) => {
   } else if (ctx.path !== '/signup') {
     throw '未登录'
   }
+  ctx.passwdHash = passwdHash
   await next()
 }
