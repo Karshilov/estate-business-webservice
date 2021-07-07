@@ -26,10 +26,10 @@ module.exports = async (ctx, next) => {
       throw 405
     }
     let {username, password} = ctx.params
-    // SHA256加密
     if (typeof username !== 'string' || typeof password !== 'string') {
       throw '缺少认证参数'
     }
+    // SHA256加密
     password = passwdHash(password)
     let {rows} = await ctx.db.query(`
       SELECT AVATAR, NICKNAME 
@@ -38,8 +38,7 @@ module.exports = async (ctx, next) => {
       `, [username, password])
     let avatar, nickname
     if (rows && rows.length === 1) {
-      avatar = rows[0]['avatar']
-      nickname = rows[0]['nickname']
+      [avatar, nickname] = [rows[0]['avatar'], rows[0]['nickname']]
     }
     // 生成 32 字节 token 转为十六进制，及其哈希值
     let token = Buffer.from(crypto.randomBytes(20)).toString('hex')
@@ -53,6 +52,29 @@ module.exports = async (ctx, next) => {
     ctx.body = token
     console.log(`${username}[${nickname}]-身份认证成功`)
     return
+  } else if (ctx.request.headers['x-api-token']) {
+    // 在数据库中根据 token 查找用户信息
+    let token = ctx.request.headers['x-api-token']
+    let tokenHash = hash(token)
+    // TODO: Redis 接入
+    let {rows} = await ctx.db.query(`
+      SELECT ID, USERNAME, AVATAR, NICKNAME
+      FROM ESTATE_AUTH
+      WHERE TOKEN_HASH = $1
+    `, [tokenHash])
+    let id, username, avatar, nickname
+    if (rows && rows.length === 1) {
+      [id, username, avatar, nickname] = [rows[0]['id'], rows[0]['username'], rows[0]['avatar'], rows[0]['nickname']]
+    } else {
+      throw '认证token错误'
+    }
+    ctx.user = {
+      isLogin: true,
+      token: tokenHash, 
+      id, username, avatar, nickname
+    }
+  } else if (ctx.path !== '/signup') {
+    throw '未登录'
   }
   await next()
 }
