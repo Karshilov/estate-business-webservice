@@ -1,0 +1,9 @@
+{
+  "minio": {
+    "endPoint": "",
+    "port": "",
+    "useSSL": true,
+    "accessKey": "",
+    "secretKey": ""
+  }
+}

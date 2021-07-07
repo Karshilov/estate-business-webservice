@@ -2,3 +2,4 @@ database/postgre-secret.js
 node_modules/
 .vscode/
 package-lock.json
+sdk.json

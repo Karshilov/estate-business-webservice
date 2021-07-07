@@ -32,13 +32,13 @@ module.exports = async (ctx, next) => {
     // SHA256加密
     password = passwdHash(password)
     let {rows} = await ctx.db.query(`
-      SELECT AVATAR, NICKNAME 
+      SELECT AVATAR, NICKNAME, EMAIL
       FROM ESTATE_USER
       WHERE USERNAME = $1 AND PASSWD = $2
       `, [username, password])
-    let avatar, nickname
+    let avatar, nickname, email
     if (rows && rows.length === 1) {
-      [avatar, nickname] = [rows[0]['avatar'], rows[0]['nickname']]
+      [avatar, nickname, email] = [rows[0]['avatar'], rows[0]['nickname'], rows[0]['email']]
     }
     // 生成 32 字节 token 转为十六进制，及其哈希值
     let token = Buffer.from(crypto.randomBytes(20)).toString('hex')
@@ -46,10 +46,16 @@ module.exports = async (ctx, next) => {
     // 记录 token
     await ctx.db.query(`
       INSERT INTO ESTATE_AUTH
-      (USERNAME, TOKEN_HASH, AVATAR, NICKNAME)
-      VALUES ($1, $2, $3, $4)
-    `, [username, tokenHash, avatar, nickname])
-    ctx.body = token
+      (USERNAME, TOKEN_HASH, AVATAR, NICKNAME, EMAIL)
+      VALUES ($1, $2, $3, $4, $5)
+    `, [username, tokenHash, avatar, nickname, email])
+    ctx.body = {
+      token,
+      username,
+      avatar,
+      nickname,
+      email
+    }
     console.log(`${username}[${nickname}]-身份认证成功`)
     return
   } else if (ctx.request.headers['x-api-token']) {
@@ -58,20 +64,20 @@ module.exports = async (ctx, next) => {
     let tokenHash = hash(token)
     // TODO: Redis 接入
     let {rows} = await ctx.db.query(`
-      SELECT ID, USERNAME, AVATAR, NICKNAME
+      SELECT ID, USERNAME, AVATAR, NICKNAME, EMAIL
       FROM ESTATE_AUTH
       WHERE TOKEN_HASH = $1
     `, [tokenHash])
-    let id, username, avatar, nickname
+    let id, username, avatar, nickname, email
     if (rows && rows.length === 1) {
-      [id, username, avatar, nickname] = [rows[0]['id'], rows[0]['username'], rows[0]['avatar'], rows[0]['nickname']]
+      [id, username, avatar, nickname, email] = [rows[0]['id'], rows[0]['username'], rows[0]['avatar'], rows[0]['nickname']], rows[0]['email']
     } else {
       throw '认证token错误'
     }
     ctx.user = {
       isLogin: true,
       token: tokenHash, 
-      id, username, avatar, nickname
+      id, username, avatar, nickname, email
     }
   } else if (ctx.path !== '/signup') {
     throw '未登录'
