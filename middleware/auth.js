@@ -39,6 +39,8 @@ module.exports = async (ctx, next) => {
     let avatar, nickname, email
     if (rows && rows.length === 1) {
       [avatar, nickname, email] = [rows[0]['avatar'], rows[0]['nickname'], rows[0]['email']]
+    } else {
+      throw '用户名或密码错误'
     }
     // 生成 32 字节 token 转为十六进制，及其哈希值
     let token = Buffer.from(crypto.randomBytes(20)).toString('hex')
@@ -72,7 +74,7 @@ module.exports = async (ctx, next) => {
     if (rows && rows.length === 1) {
       [id, username, avatar, nickname, email] = [rows[0]['id'], rows[0]['username'], rows[0]['avatar'], rows[0]['nickname']], rows[0]['email']
     } else {
-      throw '认证token错误'
+      throw 'token错误'
     }
     ctx.user = {
       isLogin: true,
