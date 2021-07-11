@@ -1,6 +1,7 @@
 exports.route = {
   async get() {
     let ret = this.user
+    ret.isLogin = undefined
     try {
       ret.avatar = await this.genGetURL('avatar', ret.avatar)
     } catch(e) {

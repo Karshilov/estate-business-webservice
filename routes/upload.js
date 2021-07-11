@@ -1,12 +1,10 @@
 const moment = require('moment')
-const uuid = require('uuid')
 exports.route = {
   async get({type, file_name}) {
     if (typeof type !== 'string' || typeof file_name !== 'string') {
       throw '未指定参数'
     }
-
-    let url, key = moment().format('x') + uuid.v1().replace(/-/g,'') + file_name
+    let key = moment().format('x') + ',' + this.user.id.replace(/-/g,'') + ',' + file_name, url
     try {
       url = await new Promise((resolve, reject) => {
         let policy = this.minio.newPostPolicy()
@@ -24,6 +22,30 @@ exports.route = {
     } catch(e) {
       throw '文件上传失败'
     }
-    return { url }
+    return { url, key }
+  },
+  async delete({type, file_name}) {
+    if (typeof type !== 'string' || typeof file_name !== 'string') {
+      throw '未指定参数'
+    }
+    let result
+    let myUUID = this.user.id.replace(/-/g,'')
+    let fileUUID = file_name.split(',')
+    if (fileUUID.length !== 3 || fileUUID[1] !== myUUID) {
+      throw '无删除权限'
+    }
+    try {
+      result = await new Promise((resolve, reject) => {
+        this.minio.removeObject(type, file_name, async (err) => {
+          if (err) {
+            reject(err)
+          }
+          resolve('删除成功')
+        })
+      })
+    } catch(e) {
+      throw '删除失败'
+    }
+    return result
   }
 }

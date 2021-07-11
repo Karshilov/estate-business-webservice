@@ -32,13 +32,13 @@ module.exports = async (ctx, next) => {
     // SHA256加密
     password = passwdHash(password)
     let {rows} = await ctx.db.query(`
-      SELECT AVATAR, NICKNAME, EMAIL
+      SELECT AVATAR, NICKNAME, EMAIL, ID
       FROM ESTATE_USER
       WHERE USERNAME = $1 AND PASSWD = $2
       `, [username, password])
-    let avatar, nickname, email
+    let avatar, nickname, email, userid
     if (rows && rows.length === 1) {
-      [avatar, nickname, email] = [rows[0]['avatar'], rows[0]['nickname'], rows[0]['email']]
+      [avatar, nickname, email, userid] = [rows[0]['avatar'], rows[0]['nickname'], rows[0]['email'], rows[0]['id']]
     } else {
       throw '用户名或密码错误'
     }
@@ -48,9 +48,9 @@ module.exports = async (ctx, next) => {
     // 记录 token
     await ctx.db.query(`
       INSERT INTO ESTATE_AUTH
-      (USERNAME, TOKEN_HASH, AVATAR, NICKNAME, EMAIL)
-      VALUES ($1, $2, $3, $4, $5)
-    `, [username, tokenHash, avatar, nickname, email])
+      (USERNAME, TOKEN_HASH, AVATAR, NICKNAME, EMAIL, USERID)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, [username, tokenHash, avatar, nickname, email, userid])
     ctx.body = {
       token,
       username,
@@ -66,13 +66,13 @@ module.exports = async (ctx, next) => {
     let tokenHash = hash(token)
     // TODO: Redis 接入
     let {rows} = await ctx.db.query(`
-      SELECT ID, USERNAME, AVATAR, NICKNAME, EMAIL
+      SELECT USERID, USERNAME, AVATAR, NICKNAME, EMAIL
       FROM ESTATE_AUTH
       WHERE TOKEN_HASH = $1
     `, [tokenHash])
     let id, username, avatar, nickname, email
     if (rows && rows.length === 1) {
-      [id, username, avatar, nickname, email] = [rows[0]['id'], rows[0]['username'], rows[0]['avatar'], rows[0]['nickname']], rows[0]['email']
+      [id, username, avatar, nickname, email] = [rows[0]['userid'], rows[0]['username'], rows[0]['avatar'], rows[0]['nickname'], rows[0]['email']]
     } else {
       throw 'token错误'
     }
