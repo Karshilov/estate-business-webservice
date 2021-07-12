@@ -81,7 +81,7 @@ module.exports = async (ctx, next) => {
       token: tokenHash, 
       id, username, avatar, nickname, email
     }
-  } else if (ctx.path !== '/signup') {
+  } else if (ctx.path !== '/user/signup') {
     throw '未登录'
   }
   ctx.passwdHash = passwdHash
