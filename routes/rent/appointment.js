@@ -63,7 +63,7 @@ exports.route = {
     } catch (e) {
       throw '修改失败'
     }
-    if (result.rowCount != 1) {
+    if (result.rowCount !== 1) {
       throw '记录不存在'
     }
     return '修改成功'
@@ -82,7 +82,7 @@ exports.route = {
     } catch (e) {
       throw '删除失败'
     }
-    if (result.rowCount != 1) {
+    if (result.rowCount !== 1) {
       throw '记录不存在'
     }
     return '删除成功'
