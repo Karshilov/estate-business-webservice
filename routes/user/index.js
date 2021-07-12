@@ -1,7 +1,16 @@
 exports.route = {
-  async get() {
-    let ret = this.user
-    ret.isLogin = undefined
+  async get({id}) {
+    // 默认返回本人用户信息
+    if (!id) {
+      id = this.user.id
+    }
+
+    let ret
+    try {
+      ret = await this.userHelper.getUserById(id)
+    } catch (e) {
+      throw '用户ID无效'
+    }
     try {
       ret.avatar = await this.genGetURL('avatar', ret.avatar)
     } catch(e) {

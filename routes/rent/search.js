@@ -14,7 +14,7 @@ exports.route = {
 
       total = parseInt(cntRecords.rows[0].count)
       records = await this.db.query(`
-        SELECT ID, TITLE, PHOTOS, AREA, CREATE_TIME, FLOOR, TOTAL_FLOOR
+        SELECT ID, TITLE, PHOTOS, AREA, CREATE_TIME, FLOOR, TOTAL_FLOOR, PRICE
         FROM ESTATE_RENT_DETAIL
         WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2
         LIMIT $3 OFFSET $4
@@ -22,13 +22,14 @@ exports.route = {
     } catch (e) {
       throw '数据库异常'
     }
-    records.rows.forEach((row) => {
-      if (!row.photos) {
-        row.cover = ''
+
+    for (let i = 0; i < records.rows.length; i++) {
+      if (!records.rows[i].photos) {
+        records.rows[i].cover = ''
       }
-      row.cover = row.photos.split(',')[0]
-      row.photos = undefined
-    })
+      records.rows[i].cover = await this.genGetURL('house', records.rows[i].photos.split(',')[0])
+      records.rows[i].photos = undefined
+    }
     return { total, list: records.rows }
   }
 }
