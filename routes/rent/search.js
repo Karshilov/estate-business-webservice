@@ -22,13 +22,14 @@ exports.route = {
     } catch (e) {
       throw '数据库异常'
     }
-    records.rows.forEach((row) => {
-      if (!row.photos) {
-        row.cover = ''
+
+    for (let i = 0; i < records.rows.length; i++) {
+      if (!records.rows[i].photos) {
+        records.rows[i].cover = ''
       }
-      row.cover = row.photos.split(',')[0]
-      row.photos = undefined
-    })
+      records.rows[i].cover = await this.genGetURL('house', records.rows[i].photos.split(',')[0])
+      records.rows[i].photos = undefined
+    }
     return { total, list: records.rows }
   }
 }
