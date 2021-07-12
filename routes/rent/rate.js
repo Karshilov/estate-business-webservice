@@ -1,5 +1,3 @@
-const moment = require('moment')
-
 exports.route = {
   async get({ house_id }) {
     if (!house_id) {
@@ -8,26 +6,25 @@ exports.route = {
 
     try {
       let records = await this.db.query(`
-        SELECT ID, APPOINTMENT_TIME, CREATE_TIME, MODIFY_TIME
-        FROM ESTATE_APPOINTMENT
-        WHERE HOUSE_ID = $1 AND USER_ID = $2 AND HOUSE_TYPE = $3
-      `, [house_id, this.user.id, 'rent'])
+        SELECT ID, USER_ID, RATE_SCORE, RATE_COMMENT, CREATE_TIME, MODIFY_TIME
+        FROM ESTATE_RATE
+        WHERE HOUSE_ID = $1 AND HOUSE_TYPE = $2
+      `, [house_id, 'rent'])
       return records.rows
     } catch (e) {
       throw '查找失败'
     }
   },
-  async post({house_id, appointment_time}) {
-    if (!house_id || !appointment_time) {
+  async post({house_id, rate_score, rate_comment}) {
+    if (!house_id || !rate_score || !rate_comment) {
       throw '缺少参数'
     }
 
-    let now = moment().format('X')
     try {
       let records = await this.db.query(`
-        SELECT COUNT(*)
-        FROM ESTATE_RENT_DETAIL
-        WHERE ID = $1
+      SELECT COUNT(*)
+      FROM ESTATE_RENT_DETAIL
+      WHERE ID = $1
       `, [house_id])
       if (parseInt(records.rows[0].count) === 0) {
         throw '没有房源'
@@ -35,31 +32,31 @@ exports.route = {
     } catch (e) {
       throw '没有房源'
     }
-
+    
+    let now = moment().format('X')
     try {
       await this.db.query(`
-        INSERT INTO ESTATE_APPOINTMENT
-        (HOUSE_ID, HOUSE_TYPE, USER_ID, APPOINTMENT_TIME, CREATE_TIME, MODIFY_TIME)
-        VALUES ($1, $2, $3, $4, $5, $5)
-      `, [house_id, 'rent', this.user.id, appointment_time, now])
+        INSERT INTO ESTATE_RATE
+        (HOUSE_ID, USER_ID, HOUSE_TYPE, RATE_SCORE, RATE_COMMENT, CREATE_TIME, MODIFY_TIME)
+        VALUES ($1, $2, $3, $4, $5, $6, $6)
+      `, [house_id, this.user.id, 'rent', rate_score, rate_comment, now])
     } catch (e) {
-      console.log(e)
       throw '增加失败'
     }
     return '增加成功'
   },
-  async put({id, house_id, appointment_time}) {
-    if (!id || !house_id || !appointment_time) {
+  async put({id, house_id, rate_score, rate_comment}) {
+    if (!id || !house_id || !rate_score || !rate_comment) {
       throw '缺少参数'
     }
 
     let now = moment().format('X'), result
     try {
       result = await this.db.query(`
-        UPDATE ESTATE_APPOINTMENT
-        SET APPOINTMENT_TIME = $1, MODIFY_TIME = $2
-        WHERE ID = $3 AND USER_ID = $4 AND HOUSE_ID = $5
-      `, [appointment_time, now, id, this.user.id, house_id])
+        UPDATE ESTATE_RATE
+        SET RATE_SCORE = $1, RATE_COMMENT = $2, MODIFY_TIME = $3
+        WHERE ID = $4 AND USER_ID = $5 AND HOUSE_ID = $6
+      `, [rate_score, rate_comment, now, id, this.user.id, house_id])
     } catch (e) {
       throw '修改失败'
     }
@@ -76,7 +73,7 @@ exports.route = {
     let result
     try {
       result = await this.db.query(`
-        DELETE FROM ESTATE_APPOINTMENT
+        DELETE FROM ESTATE_RATE
         WHERE ID = $1 AND USER_ID = $2
       `, [id, this.user.id])
     } catch (e) {
