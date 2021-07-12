@@ -14,7 +14,7 @@ exports.route = {
 
       total = parseInt(cntRecords.rows[0].count)
       records = await this.db.query(`
-        SELECT ID, TITLE, PHOTOS, AREA, CREATE_TIME, FLOOR, TOTAL_FLOOR
+        SELECT ID, TITLE, PHOTOS, AREA, CREATE_TIME, FLOOR, TOTAL_FLOOR, PRICE
         FROM ESTATE_RENT_DETAIL
         WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2
         LIMIT $3 OFFSET $4
