@@ -21,6 +21,7 @@ module.exports = async (ctx, next) => {
     ctx.body = ''
     ctx.status = 200
   } else {
+    console.log('cors finished')
     await next()
   }
 }

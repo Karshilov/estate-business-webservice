@@ -27,5 +27,6 @@ module.exports = async (ctx, next) => {
       return rolename === 'admin' || (rolename === 'broker' && ownteamid === teamid)
     }
   }
+  console.log('permission checked')
   await next()
 }

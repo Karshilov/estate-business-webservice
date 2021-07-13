@@ -104,5 +104,6 @@ module.exports = async (ctx, next) => {
     throw '未登录'
   }
   ctx.passwdHash = passwdHash
+  console.log('pass auth')
   await next()
 }

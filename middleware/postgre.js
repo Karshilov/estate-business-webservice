@@ -2,7 +2,12 @@
 const pg = require('../database/postgre')
 
 module.exports = async (ctx, next) => {
-  ctx.db = await pg.connect()
+  try {
+    ctx.db = await pg.connect()
+  } catch (e) {
+    console.log(e)
+  }
+  console.log('db connected')
   try {
     await next()
   } finally {

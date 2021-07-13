@@ -12,5 +12,6 @@ module.exports = async (ctx, next) => {
       return records.rows[0]
     }
   }
+  console.log('user finded')
   await next()
 }

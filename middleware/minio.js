@@ -13,5 +13,6 @@ module.exports = async (ctx, next) => {
         res(url)
       })})
   }
+  console.log('minio loaded')
   await next()
 }

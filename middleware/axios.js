@@ -47,6 +47,6 @@ module.exports = async (ctx, next) => {
       return await _axios[k](...args)
     }
   })
-
+  console.log('axios loaded')
   await next()
 }
