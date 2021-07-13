@@ -1,9 +1,13 @@
 exports.route = {
   async get({city, neighbourhood, page_size = 10, page_num = 1}) {
-    if (!city || !neighbourhood) {
+    if (!city) {
       throw '缺少参数'
     }
-    neighbourhood = '%' + neighbourhood + '%'
+    if (!neighbourhood) {
+      neighbourhood = '%'
+    } else {
+      neighbourhood = '%' + neighbourhood + '%'
+    }
     let records, total
     try {
       let cntRecords = await this.db.query(`
