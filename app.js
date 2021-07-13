@@ -4,6 +4,7 @@ const program = require('commander')
 const kf = require('kf-router')
 // const fs = require('fs')
 const chalk = require('chalk')
+const scheduleCronstyle = require('./auto-restart')
 
 
 program
@@ -82,4 +83,6 @@ app.use(require('./middleware/axios'))
   负责调用路由处理程序执行处理的中间件。
 */
 app.use(kf())
+
+scheduleCronstyle()
 app.listen(global.program.port)
