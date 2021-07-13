@@ -9,7 +9,7 @@
   "redis": {
     "port": 80,
     "host": "",
-    "family": ,
+    "family": 4,
     "password": "",
     "db": 0
   }
