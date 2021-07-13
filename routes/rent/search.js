@@ -9,8 +9,8 @@ exports.route = {
       let cntRecords = await this.db.query(`
         SELECT COUNT(*)
         FROM ESTATE_RENT_DETAIL
-        WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2
-      `, [city, neighborhood])
+        WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2 AND status = $3
+      `, [city, neighborhood, 'approve'])
 
       total = parseInt(cntRecords.rows[0].count)
       records = await this.db.query(`
@@ -20,6 +20,7 @@ exports.route = {
         LIMIT $3 OFFSET $4
       `, [city, neighborhood, page_size, (page_num - 1) * page_size])
     } catch (e) {
+      console.log(e)
       throw '数据库异常'
     }
 

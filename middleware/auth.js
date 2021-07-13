@@ -46,11 +46,17 @@ module.exports = async (ctx, next) => {
     let token = Buffer.from(crypto.randomBytes(20)).toString('hex')
     let tokenHash = hash(token)
     // 记录 token
-    await ctx.db.query(`
-      INSERT INTO ESTATE_AUTH
-      (USERNAME, TOKEN_HASH, AVATAR, NICKNAME, EMAIL, USERID)
-      VALUES ($1, $2, $3, $4, $5, $6)
-    `, [username, tokenHash, avatar, nickname, email, userid])
+    if (ctx.redis) {
+      // Redis存储
+      await ctx.redis.set(tokenHash, JSON.stringify({username, avatar, nickname, email, userid}))
+    } else {
+      // DB存储
+      await ctx.db.query(`
+        INSERT INTO ESTATE_AUTH
+        (USERNAME, TOKEN_HASH, AVATAR, NICKNAME, EMAIL, USERID)
+        VALUES ($1, $2, $3, $4, $5, $6)
+      `, [username, tokenHash, avatar, nickname, email, userid])
+    }
     ctx.body = {
       token,
       username,
@@ -64,22 +70,35 @@ module.exports = async (ctx, next) => {
     // 在数据库中根据 token 查找用户信息
     let token = ctx.request.headers['x-api-token']
     let tokenHash = hash(token)
-    // TODO: Redis 接入
-    let {rows} = await ctx.db.query(`
-      SELECT USERID, USERNAME, AVATAR, NICKNAME, EMAIL
-      FROM ESTATE_AUTH
-      WHERE TOKEN_HASH = $1
-    `, [tokenHash])
-    let id, username, avatar, nickname, email
-    if (rows && rows.length === 1) {
-      [id, username, avatar, nickname, email] = [rows[0]['userid'], rows[0]['username'], rows[0]['avatar'], rows[0]['nickname'], rows[0]['email']]
+    if (ctx.redis) {
+      let result = await ctx.redis.get(tokenHash)
+      if (!result) {
+        throw 'token错误'
+      } else {
+        result = JSON.parse(result)
+        let {userid: id, username, avatar, nickname, email} = result
+        ctx.user = {
+          isLogin: true,
+          token: tokenHash, 
+          id, username, avatar, nickname, email
+        }
+      }
     } else {
-      throw 'token错误'
-    }
-    ctx.user = {
-      isLogin: true,
-      token: tokenHash, 
-      id, username, avatar, nickname, email
+      let {rows} = await ctx.db.query(`
+        SELECT USERID, USERNAME, AVATAR, NICKNAME, EMAIL
+        FROM ESTATE_AUTH
+        WHERE TOKEN_HASH = $1
+      `, [tokenHash])
+      if (rows && rows.length === 1) {
+        let {userid: id, username, avatar, nickname, email} = rows[0]
+        ctx.user = {
+          isLogin: true,
+          token: tokenHash, 
+          id, username, avatar, nickname, email
+        }
+      } else {
+        throw 'token错误'
+      }
     }
   } else if (ctx.path !== '/user/signup') {
     throw '未登录'

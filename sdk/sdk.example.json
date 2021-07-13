@@ -5,5 +5,12 @@
     "useSSL": true,
     "accessKey": "",
     "secretKey": ""
+  },
+  "redis": {
+    "port": 80,
+    "host": "",
+    "family": ,
+    "password": "",
+    "db": 0
   }
 }
