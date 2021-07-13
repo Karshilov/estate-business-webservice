@@ -62,7 +62,12 @@ app.use(require('./middleware/return'))
 app.use(require('./middleware/postgre'))
 
 /**
-  ## D. API 层
+ ## D. Redis 数据库
+ */
+app.use(require('./middleware/redis'))
+
+/**
+  ## E. API 层
   负责为路由处理程序提供 API 以便路由处理程序使用的中间件。
 */
 // 1. 身份认证
