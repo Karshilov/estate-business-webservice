@@ -3,17 +3,12 @@ exports.route = {
     if (!city) {
       throw '缺少参数'
     }
-<<<<<<< HEAD
-    neighborhood = '%' + neighborhood + '%'
-    let records, total, features
-=======
     if (!neighbourhood) {
       neighbourhood = '%'
     } else {
       neighbourhood = '%' + neighbourhood + '%'
     }
-    let records, total
->>>>>>> 38edafbd009cb40e4050315571634b012c90a9c3
+    let records, total, features
     try {
       let cntRecords = await this.db.query(`
         SELECT COUNT(*)
@@ -27,13 +22,13 @@ exports.route = {
         FROM ESTATE_RENT_DETAIL
         WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2
         LIMIT $3 OFFSET $4
-      `, [city, neighborhood, page_size, (page_num - 1) * page_size])
+      `, [city, neighbourhood, page_size, (page_num - 1) * page_size])
       features = await this.db.query(`
         SELECT FEATURES
         FROM ESTATE_RENT_DETAIL
         WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2
         LIMIT $3 OFFSET $4
-      `, [city, neighborhood, page_size, (page_num - 1) * page_size])
+      `, [city, neighbourhood, page_size, (page_num - 1) * page_size])
     } catch (e) {
       console.log(e)
       throw '数据库异常'
