@@ -17,6 +17,10 @@ exports.route = {
       console.log(e)
       throw '图片链接获取失败'
     }
+    // 非本人时不返回联系方式信息
+    if (id !== this.user.id) {
+      ret.email = ret.phone_number = undefined
+    }
     return ret
   }
 }

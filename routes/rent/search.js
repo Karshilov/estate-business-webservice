@@ -56,12 +56,13 @@ exports.route = {
       throw '数据库异常'
     }
     for (let i = 0; i < records.rows.length; i++) {
+      records.rows[i].features = records.rows[i].features.split(',')
       if (!records.rows[i].photos) {
         records.rows[i].cover = ''
+      } else {
+        records.rows[i].cover = await this.genGetURL('house', records.rows[i].photos.split(',')[0])
       }
-      records.rows[i].cover = await this.genGetURL('house', records.rows[i].photos.split(',')[0])
       records.rows[i].photos = undefined
-      records.rows[i].features = records.rows[i].features.split(',')
     }
     return { total, list: records.rows }
   }

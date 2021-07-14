@@ -2,7 +2,7 @@ module.exports = async (ctx, next) => {
   ctx.userHelper = {
     getUserById: async (id) => {
       let records = await ctx.db.query(`
-        SELECT USERNAME, AVATAR, NICKNAME
+        SELECT USERNAME, AVATAR, NICKNAME, EMAIL, GENDER, PHONE_NUMBER
         FROM ESTATE_USER
         WHERE ID = $1
       `, [id])
