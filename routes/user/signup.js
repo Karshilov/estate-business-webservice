@@ -1,10 +1,14 @@
 exports.route = {
-  async post({username, password, nickname, email, role}) {
-    if (!username || !password || !role || !nickname || !email) {
+  async post({username, password, nickname, email, role, verify}) {
+    if (!username || !password || !role || !nickname || !email || !verify) {
       throw '参数缺失'
     }
     if (role !== 'client' && role !== 'broker') {
       throw '角色指定异常'
+    }
+    let result = await this.redis.get(email)
+    if (result !== verify) {
+      throw '验证码错误'
     }
     let passwdHash = this.passwdHash(password)
     let userid, roleid
