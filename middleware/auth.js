@@ -58,6 +58,7 @@ module.exports = async (ctx, next) => {
       `, [username, tokenHash, avatar, nickname, email, userid])
     }
     ctx.body = {
+      userid,
       token,
       username,
       avatar,
