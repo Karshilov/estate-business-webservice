@@ -24,41 +24,51 @@ exports.route = {
     return result
   },
 
-  async post({application_id,application_result}) {
+  async post({team_name,application_id,application_result}) {
     try {
-      await this.db.query(`
-        INSERT INTO ESTATE_TEAM
-        (NAME,LEADER_ID)
-        VALUES ($1, $2)
-      `, [name, this.user.id])
+      let applicant = await this.db.query(`
+        SELECT USER_ID
+        FROM ESTATE_JOIN_TEAM
+        WHERE ID = $1
+      `,[application_id])//获取申请者的id
+
+      if(application_result == 1){//接受申请
+        console.log('接受')
+        let ids = await this.db.query(`
+        SELECT MEMBER_IDS
+        FROM ESTATE_TEAM
+        WHERE name = $1
+      `, [team_name])
+        console.log(ids.rows)
+        console.log('start changing member_ids')
+        console.log(applicant.rows[0].user_id+','+ids.rows[0].member_ids)
+        await this.db.query(`
+        UPDATE ESTATE_TEAM
+        SET 
+          MEMBER_IDS = $1
+        WHERE 
+          NAME = $2
+      `, [applicant.rows[0].user_id+','+ids.rows[0].member_ids,team_name])
+        console.log('start changing apply_status')
+        await this.db.query(`
+        UPDATE ESTATE_JOIN_TEAM
+        SET 
+          APPLY_STATUS = 1
+        WHERE ID = $1
+      `, [application_id])
+      }
+      else if(application_result == -1){//拒绝申请
+        await this.db.query(`
+        UPDATE ESTATE_JOIN_TEAM
+        SET
+          APPLY_STATUS = -1
+        WHERE ID = $1
+      `, [application_id])
+      }
     } catch (e) {
       console.log(e)
       throw '添加失败'
     }
     return '添加成功'
-  },
-  async put({id}) {
-    try {
-      await this.db.query(`
-        DELETE FROM ESTATE_TEAM
-        WHERE ID = $1
-      `, [id])
-    } catch (e) {
-      console.log(e)
-      throw '删除失败'
-    }
-    return '删除成功'
-  },
-  async delete({id}) {
-    try {
-      await this.db.query(`
-        DELETE FROM ESTATE_TEAM
-        WHERE ID = $1
-      `, [id])
-    } catch (e) {
-      console.log(e)
-      throw '删除失败'
-    }
-    return '删除成功'
   }
 }
