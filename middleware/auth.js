@@ -100,7 +100,7 @@ module.exports = async (ctx, next) => {
         throw 'token错误'
       }
     }
-  } else if (ctx.path !== '/user/signup') {
+  } else if (ctx.path !== '/user/signup' && ctx.path !== '/email') {
     throw '未登录'
   }
   ctx.passwdHash = passwdHash

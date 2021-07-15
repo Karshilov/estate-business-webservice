@@ -17,6 +17,29 @@ exports.route = {
       console.log(e)
       throw '图片链接获取失败'
     }
+    // 非本人时不返回联系方式信息
+    if (id !== this.user.id) {
+      ret.email = ret.phone_number = undefined
+    }
     return ret
+  },
+  async put({username, avatar, nickname, email, gender, phone_number}) {
+    if (!username || !avatar || !nickname || !email) {
+      throw '参数不全'
+    }
+    try {
+      var result = await this.db.query(`
+        UPDATE ESTATE_USER
+        SET USERNAME = $1, AVATAR = $2, NICKNAME = $3, 
+        EMAIL = $4, GENDER = $5, PHONE_NUMBER = $6
+        WHERE ID = $7
+      `, [username, avatar, nickname, email, gender, phone_number, this.user.id])
+    } catch (e) {
+      throw '数据库异常'
+    }
+    if (result.rowCount !== 1) {
+      throw '用户ID无效'
+    }
+    return '修改成功'
   }
 }
