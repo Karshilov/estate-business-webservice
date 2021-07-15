@@ -18,6 +18,15 @@ exports.route = {
     record = record.rows[0]
     // 获取用户信息
     record.owner = await this.userHelper.getUserById(record.owner)
+    // 去除用户信息中联系方式等信息
+    record.owner.email = record.owner.phone_number = undefined
+    // 对于经纪人，增加团队信息
+    if (await this.perms.getPerm(this.user.id) === 'broker') {
+      record.owner.team = await this.userHelper.getTeamById(this.user.id)
+      // 删除团队领导和成员信息
+      record.owner.team.leader_id = undefined
+      record.owner.team.member_ids = undefined
+    }
     // 获取用户头像URL
     record.owner.avatar = await this.genGetURL('avatar', record.owner.avatar)
     // 分割features
