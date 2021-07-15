@@ -17,7 +17,11 @@ exports.route = {
     }
     record = record.rows[0]
     // 获取用户信息
-    record.owner = await this.userHelper.getUserById(record.owner)
+    let userid = record.owner
+    record.owner = await this.userHelper.getUserById(userid)
+    record.owner.userid = userid
+    // 获取用户身份
+    record.owner.role = await this.perms.getPerm(userid)
     // 去除用户信息中联系方式等信息
     record.owner.email = record.owner.phone_number = undefined
     // 对于经纪人，增加团队信息

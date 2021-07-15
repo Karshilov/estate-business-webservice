@@ -57,12 +57,19 @@ module.exports = async (ctx, next) => {
         VALUES ($1, $2, $3, $4, $5, $6)
       `, [username, tokenHash, avatar, nickname, email, userid])
     }
+    // 获取角色信息
+    let {"rows": roles} = await ctx.db.query(`
+      SELECT ER.ALTER_NAME
+      FROM ESTATE_USER_ROLE EUR
+      INNER JOIN ESTATE_ROLE ER on ER.ID = EUR.ROLEID
+      WHERE EUR.USERID = $1
+    `, [userid])
+    if (roles.length === 0) {
+      throw '无角色信息'
+    }
     ctx.body = {
-      token,
-      username,
-      avatar,
-      nickname,
-      email
+      userid, token, username, avatar, nickname, email,
+      role: roles[0].alter_name
     }
     console.log(`${username}[${nickname}]-身份认证成功`)
     return
