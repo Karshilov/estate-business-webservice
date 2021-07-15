@@ -1,31 +1,30 @@
 exports.route = {
-  async get() {
-    let team_id = await this.db.query(`
-      SELECT ID
-      FROM ESTATE_TEAM
-      WHERE LEADER_ID = $1
-    `, [this.user.id])
-    let L = team_id.rows.length
-    let team_ids = team_id.rows
-    let apply_info
-    let result
-    console.log(team_ids[0].id)
-    for(var i =0;i<L;i++){
-      apply_info = await this.db.query(`
-      SELECT USER_ID
-      FROM ESTATE_JOIN_TEAM
-      WHERE TEAM_ID = $1
-    `,[team_ids[i].id])
-
-      result['team_id']=team_ids[i].id
-      result['user_id']=apply_info
-      console.log(result)
+  async get({team_id}) {
+    // let now = moment().format('X')
+    let user_ids
+    var result = {}
+    try {
+      user_ids = await this.db.query(`
+        SELECT ID,USER_ID,CREATE_DATE
+        FROM ESTATE_JOIN_TEAM
+        WHERE TEAM_ID = $1
+      `, [team_id])
+      // console.log(user_ids.rows[0].id)  
+    } catch (e) {
+      throw '数据库错误'
+    }
+    let p
+    // console.log('length',user_ids.rows.length)
+    for(var i=0;i<user_ids.rows.length;i++){
+      p = {id:user_ids.rows[i].id,user_id:user_ids.rows[i].user_id,create_date:user_ids.rows[i].create_date}
+      var key = 'applicant'+i
+      result[key]=p     
     }
     
-    return {result}
+    return result
   },
 
-  async post({name}) {
+  async post({application_id,application_result}) {
     try {
       await this.db.query(`
         INSERT INTO ESTATE_TEAM
