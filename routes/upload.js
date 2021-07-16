@@ -4,7 +4,7 @@ exports.route = {
     if (typeof type !== 'string' || typeof file_name !== 'string') {
       throw '未指定参数'
     }
-    let key = moment().format('x') + ',' + this.user.id.replace(/-/g,'') + ',' + file_name, url
+    let key = moment().format('x') + '-' + this.user.id.replace(/-/g,'') + '-' + file_name, url
     try {
       url = await new Promise((resolve, reject) => {
         let policy = this.minio.newPostPolicy()
@@ -30,7 +30,7 @@ exports.route = {
     }
     let result
     let myUUID = this.user.id.replace(/-/g,'')
-    let fileUUID = file_name.split(',')
+    let fileUUID = file_name.split('-')
     if (fileUUID.length !== 3 || fileUUID[1] !== myUUID) {
       throw '无删除权限'
     }
