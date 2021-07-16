@@ -29,10 +29,11 @@ exports.route = {
     let L = ids.length
     let member_ids
     let afterStr
-    console.log(L)
-    for(var i =0;i<L;i++){
-      console.log(ids[i])
-    }
+    let delete_ids={}
+    // console.log(L)
+    // for(var i =0;i<L;i++){
+    //   console.log(ids[i])
+    // }
     try{
       member_ids = await this.db.query(`
       SELECT MEMBER_IDS
@@ -51,6 +52,7 @@ exports.route = {
           if(tmpStr == ids[j]){
             console.log("匹配"+ids[j])
             ok = false
+            break
           }
         }
         if(ok){
@@ -63,6 +65,9 @@ exports.route = {
           console.log("ids: ",afterStr)
         }
         else{
+          let key = 'id'+j
+          let val = tmpStr
+          delete_ids[key] = val
           console.log('删除了',tmpStr)
         }
         // console.log(tmpStr+'\n')
@@ -77,7 +82,7 @@ exports.route = {
     }catch(e){
       throw '数据库错误'
     }
-    return '删除成功'
+    return {delete_ids}
   },
   async delete({id}) {
     try {
@@ -87,8 +92,8 @@ exports.route = {
       `, [id])
     } catch (e) {
       console.log(e)
-      throw '删除失败'
+      throw '团队删除失败'
     }
-    return '删除成功'
+    return '团队删除成功'
   }
 }
