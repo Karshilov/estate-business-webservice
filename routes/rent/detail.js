@@ -28,17 +28,24 @@ exports.route = {
     if (await this.perms.getPerm(this.user.id) === 'broker') {
       record.owner.team = await this.userHelper.getTeamById(this.user.id)
       // 删除团队领导和成员信息
-      record.owner.team.leader_id = undefined
-      record.owner.team.member_ids = undefined
+      if (record.owner.team) {
+        record.owner.team.leader_id = undefined
+        record.owner.team.member_ids = undefined
+      }
     }
     // 获取用户头像URL
     record.owner.avatar = await this.genGetURL('avatar', record.owner.avatar)
     // 分割features
     record.features = record.features.split(',')
     // 解析图片URL
-    record.photos = record.photos.split(',')
-    for (let i = 0; i < record.photos.length; i++) {
-      record.photos[i] = await this.genGetURL('house', record.photos[i])
+    if (record.photos) {
+      record.photos = record.photos.split(',')
+      for (let i = 0; i < record.photos.length; i++) {
+        record.photos[i] = await this.genGetURL('house', record.photos[i])
+      }
+    } else {
+      // 模拟图片
+      record.photos = [await this.genGetURL('house', 'foobar1.jpg'), await this.genGetURL('house', 'foobar2.jpg')]
     }
     return record
   },

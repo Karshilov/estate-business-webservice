@@ -58,7 +58,7 @@ exports.route = {
     for (let i = 0; i < records.rows.length; i++) {
       records.rows[i].features = records.rows[i].features.split(',')
       if (!records.rows[i].photos) {
-        records.rows[i].cover = ''
+        records.rows[i].cover = await this.genGetURL('house', 'foobar1.jpg')
       } else {
         records.rows[i].cover = await this.genGetURL('house', records.rows[i].photos.split(',')[0])
       }
