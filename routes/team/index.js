@@ -9,16 +9,22 @@ exports.route = {
       FROM ESTATE_TEAM
       WHERE ID = $1
     `, [id])
-    return record.rows
+    record.rows[0].member_id = record.rows[0].member_ids.split(',')
+    return record.rows[0]
   },
   
   async post({name}) {
+    // 仅经纪人能够使用
+    if (await this.perms.getPerm(this.user.id) !== 'broker') {
+      throw '没有权限'
+    }
     try {
+      // 新增团队
       await this.db.query(`
         INSERT INTO ESTATE_TEAM
-        (NAME,LEADER_ID)
-        VALUES ($1, $2)
-      `, [name, this.user.id])
+        (NAME, LEADER_ID, MEMBER_IDS)
+        VALUES ($1, $2, $3)
+      `, [name, this.user.id, this.user.id])
     } catch (e) {
       console.log(e)
       throw '添加失败'
@@ -85,8 +91,27 @@ exports.route = {
     return {delete_ids}
   },
   async delete({id}) {
+    // 仅创建人或管理员能够使用
+    if (!await this.perms.hasPermOnTeam(this.user.id, id)) {
+      throw '权限不足'
+    }
+    // 删除加入团队的成员, 加入团队记录
+    try {
+      result = await this.db.query(`
+        UPDATE ESTATE_USER_ROLE
+        SET TEAMID = $1
+        WHERE TEAMID = $2
+      `, [null, id])
+    } catch (e) {
+      throw '删除失败'
+    }
+    // 删除团队
     try {
       await this.db.query(`
+        DELETE FROM ESTATE_JOIN_TEAM
+        WHERE TEAM_ID = $1
+      `, [id])
+      var result = await this.db.query(`
         DELETE FROM ESTATE_TEAM
         WHERE ID = $1
       `, [id])
@@ -94,6 +119,9 @@ exports.route = {
       console.log(e)
       throw '团队删除失败'
     }
-    return '团队删除成功'
+    if (result.rowCount === 0) {
+      throw '团队不存在'
+    }
+    return '删除成功'
   }
 }

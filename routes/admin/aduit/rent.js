@@ -1,6 +1,6 @@
 exports.route = {
   async post({house_id, approval, reason}) {
-    if (this.perms.getPerm(this.user.id) !== 'admin') {
+    if (await this.perms.getPerm(this.user.id) !== 'admin') {
       throw '权限不足'
     }
     if (!house_id || !reason) {

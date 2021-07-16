@@ -20,7 +20,7 @@ module.exports = async (ctx, next) => {
         WHERE EUR.userid = $1
       `, [id])
       if (records.rows.length !== 1) {
-        throw '查找失败'
+        return null
       }
       // 切分团队成员列表
       records.rows[0].member_ids = records.rows[0].member_ids.split(',')

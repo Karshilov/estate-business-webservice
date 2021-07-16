@@ -13,14 +13,14 @@ exports.route = {
       let cntRecords = await this.db.query(`
         SELECT COUNT(*)
         FROM ESTATE_TEAM
-        WHERE STATUS != 'auditing' AND NAME LIKE $1
+        WHERE STATUS = 1 AND NAME LIKE $1
       `, [name])
-      total = cntRecords.rows[0].count
+      total = parseInt(cntRecords.rows[0].count)
 
       result = await this.db.query(`
-        SELECT ID, NAME, LEADER_ID, MEMBER_IDS, COUNT
+        SELECT ID, NAME, LEADER_ID, MEMBER_IDS
         FROM ESTATE_TEAM
-        WHERE STATUS != 'auditing' AND NAME LIKE $1
+        WHERE STATUS = 1 AND NAME LIKE $1
         LIMIT $2 OFFSET $3
       `, [name, page_size, (page_num - 1) * page_size])
     } catch (e) {

@@ -20,7 +20,7 @@ module.exports = async (ctx, next) => {
         INNER JOIN ESTATE_ROLE ER on ER.ID = EUR.ROLEID
         WHERE EUR.USERID = $1
       `, [userid])
-      if (records.rows.length == 0) {
+      if (records.rows.length === 0) {
         return false
       }
       let rolename = records.rows[0]['alter_name'], ownteamid = records.rows[0]['teamid']
