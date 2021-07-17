@@ -11,10 +11,10 @@ exports.route = {
     // 拼接条件
     let conds = '', orderConds = ''
     // 拼接整租合租
-    if (whole !== 0) {
-      if (whole === 1) {
+    if (parseInt(whole) !== 0) {
+      if (parseInt(whole) === 1) {
         conds += ` AND TITLE LIKE '整租%' `
-      } else if (whole === 2) {
+      } else if (parseInt(whole) === 2) {
         conds += ` AND TITLE LIKE '合租%' `
       }
     }
