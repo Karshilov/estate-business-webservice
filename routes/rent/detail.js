@@ -47,6 +47,12 @@ exports.route = {
       // 模拟图片
       record.photos = [await this.genGetURL('house', 'foobar1.jpg'), await this.genGetURL('house', 'foobar2.jpg')]
     }
+    // 记录用户访问的房源
+    await this.db.query(`
+      INSERT INTO ESTATE_VIEW_HISTORY
+      (USERID, HOUSE_TYPE, HOUSE_ID)
+      VALUES ($1, $2, $3)
+    `, [this.user.id, 'rent', id])
     return record
   },
 

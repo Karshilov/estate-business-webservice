@@ -42,14 +42,14 @@ exports.route = {
       let cntRecords = await this.db.query(`
         SELECT COUNT(*)
         FROM ESTATE_RENT_DETAIL
-        WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2
+        WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2 AND STATUS = 'approve'
       ` + conds, [city, neighbourhood])
 
       var total = parseInt(cntRecords.rows[0].count)
       var records = await this.db.query(`
         SELECT ID, TITLE, PHOTOS, AREA, CREATE_TIME, FLOOR, TOTAL_FLOOR, PRICE, FEATURES
         FROM ESTATE_RENT_DETAIL
-        WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2
+        WHERE CITY = $1 AND NEIGHBOURHOOD LIKE $2 AND STATUS = 'approve'
       ` + conds + orderConds + `LIMIT $3 OFFSET $4`, [city, neighbourhood, page_size, (page_num - 1) * page_size])
     } catch (e) {
       console.log(e)
