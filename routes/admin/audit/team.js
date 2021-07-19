@@ -1,4 +1,29 @@
 exports.route = {
+  async get({page_size, page_num}) {
+    if (await this.perms.getPerm(this.user.id) !== 'admin') {
+      throw '权限不足'
+    }
+    if (!page_size || !page_num) {
+      throw '参数不全'
+    }
+    [page_size, page_num] = [parseInt(page_size), parseInt(page_num)]
+    try {
+      var cnt = await this.db.query(`
+        SELECT COUNT(*)
+        FROM ESTATE_TEAM
+        WHERE STATUS = 0
+      `)
+      var records = await this.db.query(`
+        SELECT *
+        FROM ESTATE_TEAM
+        WHERE STATUS = 0
+        LIMIT $1 OFFSET $2
+      `, [page_size, (page_num-1)*page_size])
+    } catch (e) {
+      throw '数据库异常'
+    }
+    return {total: cnt.rows[0].count, list: records.rows}
+  },
   async post({team_id, approval, reason}) {
     if (await this.perms.getPerm(this.user.id) !== 'admin') {
       throw '权限不足'

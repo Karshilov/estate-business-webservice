@@ -53,6 +53,17 @@ exports.route = {
       (USERID, HOUSE_TYPE, HOUSE_ID)
       VALUES ($1, $2, $3)
     `, [this.user.id, 'rent', id])
+    // 更新热度记录
+    try {
+      await this.db.query(`
+        UPDATE ESTATE_RENT_DETAIL
+        SET HOT = $1
+        WHERE ID = $2
+      `, [record.hot + 1, record.id])
+    } catch (e) {
+      console.log(e)
+      throw e
+    }
     return record
   },
 

@@ -31,8 +31,10 @@ exports.route = {
       conds += ` AND HOUSE_TYPE LIKE '${house_type}%' `
     }
     // 拼接排序标准
-    if (order_by === 'area' || order_by === 'price') {
+    if (order_by === 'area' || order_by === 'price' || order_by === 'hot') {
       orderConds += ` ORDER BY ${order_by} `
+    } else if (order_by === 'time') {
+      orderConds += ` ORDER BY CREATE_TIME `
     }
     // 拼接降序
     if (desc === 'true') {
