@@ -6,7 +6,7 @@ exports.route = {
     try {
       console.log(keyword, lat, lng, category, radius)
       const res =
-        await this.get(`${url}?keyword=${encodeURIComponent(keyword)}&boundary=nearby(${lat},${lng},${radius},1)&filter=category=${encodeURIComponent(category)}&key=${apiKey}`)
+        await this.get(`${url}?keyword=${encodeURIComponent(category)}&boundary=nearby(${lat},${lng},${radius},0)&filter=category=${encodeURIComponent(category)}&key=${apiKey}&orderby=_distance`)
       if (res.data.status === 0) {
         return res.data
       } else {
