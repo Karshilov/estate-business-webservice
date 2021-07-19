@@ -82,6 +82,8 @@ app.use(require('./middleware/user'))
 app.use(require('./middleware/minio'))
 // 7. 网络请求，为身份认证和路由处理程序提供了网络请求 API
 app.use(require('./middleware/axios'))
+// 8. 推荐数据，为推荐系统构建赋能
+app.use(require('./middleware/recommend'))
 /**
   ## E. 路由层
   负责调用路由处理程序执行处理的中间件。
