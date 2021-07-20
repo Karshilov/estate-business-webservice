@@ -23,17 +23,17 @@ exports.route = {
     }
     return ret
   },
-  async put({username, avatar, nickname, email, gender, phone_number}) {
-    if (!username || !avatar || !nickname || !email) {
+  async put({username, nickname, email, gender, phone_number}) {
+    if (!username || !nickname || !email) {
       throw '参数不全'
     }
     try {
       var result = await this.db.query(`
         UPDATE ESTATE_USER
-        SET USERNAME = $1, AVATAR = $2, NICKNAME = $3, 
-        EMAIL = $4, GENDER = $5, PHONE_NUMBER = $6
-        WHERE ID = $7
-      `, [username, avatar, nickname, email, gender, phone_number, this.user.id])
+        SET USERNAME = $1, NICKNAME = $2, 
+        EMAIL = $3, GENDER = $4, PHONE_NUMBER = $5
+        WHERE ID = $6
+      `, [username, nickname, email, gender, phone_number, this.user.id])
     } catch (e) {
       throw '数据库异常'
     }
