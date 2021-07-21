@@ -1,5 +1,8 @@
 exports.route = {
   async get({id, page_num, page_size}) {
+    if (!page_num || !page_size) {
+      throw '参数不全'
+    }
     if(!id){//不填id 默认查看用户自己的预约信息
       id = this.user.id
     }
@@ -8,7 +11,7 @@ exports.route = {
       FROM ESTATE_APPOINTMENT
       WHERE USER_ID = $1
     `, [id])
-    if (cnt.rows.length === 0) {
+    if (cnt.rows[0].count === '0') {
       return {total: 0, list: []}
     }
     let houseID
