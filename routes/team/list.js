@@ -26,9 +26,24 @@ exports.route = {
     } catch (e) {
       throw '数据库错误'
     }
-    result.rows.forEach((val) => {
-      val.member_ids = val.member_ids.split(',')
-    })
+    // 分割成员列表, 处理成员信息
+    for (let i = 0; i < result.rows.length; i++) {
+      result.rows[i].leader = await this.userHelper.getUserById(result.rows[i].leader_id)
+      result.rows[i].leader.user_id = result.rows[i].leader_id
+      result.rows[i].leader.avatar = await this.genGetURL('avatar', result.rows[i].leader.avatar)
+      result.rows[i].leader.phone_number = undefined
+      result.rows[i].leader.email = undefined
+      result.rows[i].leader_id = undefined
+      result.rows[i].member_ids = result.rows[i].member_ids.split(',')
+      for (let j = 0; j < result.rows[i].member_ids.length; j++) {
+        let user_id = result.rows[i].member_ids[j]
+        result.rows[i].member_ids[j] = await this.userHelper.getUserById(result.rows[i].member_ids[j])
+        result.rows[i].member_ids[j].user_id = user_id
+        result.rows[i].member_ids[j].avatar = await this.genGetURL('avatar', result.rows[i].member_ids[j].avatar)
+        result.rows[i].member_ids[j].email = undefined
+        result.rows[i].member_ids[j].phone_number = undefined
+      }
+    }
     return {total, list: result.rows}
   }
 }
