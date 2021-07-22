@@ -28,7 +28,7 @@ exports.route = {
     let results = []
     for (let {house_id, appointment_time, create_time, modify_time} of houseID.rows) {
       let record = await this.db.query(`
-        SELECT ID, TITLE, PHOTOS, AREA, FEATURES
+        SELECT ID, TITLE, PHOTOS, AREA, FEATURES, FLOOR, TOTAL_FLOOR
         FROM ESTATE_RENT_DETAIL
         WHERE ID = $1
       `, [house_id])

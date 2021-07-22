@@ -1,3 +1,5 @@
+let moment = require('moment')
+
 exports.route = {
   async get({ id }) {
     console.log(this.user.role)
@@ -18,13 +20,14 @@ exports.route = {
     if (await this.perms.getPerm(this.user.id) !== 'broker') {
       throw '没有权限'
     }
+    let now = moment().format('X')
     try {
       // 新增团队
       await this.db.query(`
         INSERT INTO ESTATE_TEAM
-        (NAME, LEADER_ID, MEMBER_IDS)
+        (NAME, LEADER_ID, MEMBER_IDS, CREATE_TIME)
         VALUES ($1, $2, $3)
-      `, [name, this.user.id, this.user.id])
+      `, [name, this.user.id, this.user.id, now])
     } catch (e) {
       console.log(e)
       throw '添加失败'

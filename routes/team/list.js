@@ -18,7 +18,7 @@ exports.route = {
       total = parseInt(cntRecords.rows[0].count)
 
       result = await this.db.query(`
-        SELECT ID, NAME, LEADER_ID, MEMBER_IDS
+        SELECT ID, NAME, LEADER_ID, MEMBER_IDS, CREATE_TIME
         FROM ESTATE_TEAM
         WHERE STATUS = 1 AND NAME LIKE $1
         LIMIT $2 OFFSET $3

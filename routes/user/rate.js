@@ -30,7 +30,7 @@ exports.route = {
     }
     for (let {house_id, rate_score, rate_comment, create_time, modify_time} of userCommentInfo.rows) {
       let record = await this.db.query(`
-        SELECT ID, TITLE, PHOTOS, AREA, FEATURES
+        SELECT ID, TITLE, PHOTOS, AREA, FEATURES, FEATURES, FLOOR, TOTAL_FLOOR
         FROM ESTATE_RENT_DETAIL
         WHERE ID = $1
       `, [house_id])
