@@ -15,15 +15,11 @@ exports.route = {
     record.leader.id = record.leader_id
     record.leader.avatar = await this.genGetURL('avatar', record.leader.avatar)
     record.leader_id = undefined
-    record.leader.phone_number = undefined
-    record.leader.email = undefined
     record.member_ids = record.member_ids.split(',')
     for (let i = 0; i < record.member_ids.length; i++) {
       let user_id = record.member_ids[i]
       record.member_ids[i] = await this.userHelper.getUserById(record.member_ids[i])
       record.member_ids[i].avatar = await this.genGetURL('avatar', record.member_ids[i].avatar)
-      record.member_ids[i].email = undefined
-      record.member_ids[i].phone_number = undefined
       record.member_ids[i].user_id = user_id
     }
     return record
