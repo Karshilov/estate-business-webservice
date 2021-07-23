@@ -31,7 +31,7 @@ exports.route = {
     if (!house_id || !reason) {
       throw '参数不全'
     }
-    let status = 'fail', results
+    let status = 'reject', results
     if (approval) {
       status = 'approve'
       reason = null
