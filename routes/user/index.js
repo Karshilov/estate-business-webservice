@@ -33,6 +33,7 @@ exports.route = {
         ret.team.member_ids[i].userid = id
         ret.team.member_ids[i].avatar = await this.genGetURL('avatar', ret.team.member_ids[i].avatar)
       }
+      ret.team.member_ids.reverse()
     }
     return ret
   },

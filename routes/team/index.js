@@ -22,6 +22,7 @@ exports.route = {
       record.member_ids[i].avatar = await this.genGetURL('avatar', record.member_ids[i].avatar)
       record.member_ids[i].user_id = user_id
     }
+    record.member_ids.reverse()
     return record
   },
   
