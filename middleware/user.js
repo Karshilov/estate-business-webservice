@@ -13,7 +13,7 @@ module.exports = async (ctx, next) => {
     },
     getTeamById: async (id) => {
       let records = await ctx.db.query(`
-        SELECT EUR.TEAMID, ET.NAME, ET.LEADER_ID, ET.MEMBER_IDS
+        SELECT EUR.TEAMID, ET.NAME, ET.LEADER_ID, ET.MEMBER_IDS, ET.CREATE_TIME
         FROM ESTATE_USER_ROLE EUR
         INNER JOIN ESTATE_TEAM ET
         ON ET.id = EUR.teamid
