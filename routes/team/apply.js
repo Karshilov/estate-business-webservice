@@ -30,9 +30,13 @@ exports.route = {
     if (!await this.perms.hasPermOnTeam(this.user.id, team_id)) {
       throw '权限不足'
     }
-    try {
-      if (approve) {
-        // 接受申请
+    if (approve) {
+      // 接受申请
+      // 判断成员是否加入团队
+      if (await this.userHelper.getTeamById(user_id)) {
+        throw '用户已加入团队'
+      }
+      try {
         let ids = await this.db.query(`
           SELECT MEMBER_IDS
           FROM ESTATE_TEAM
@@ -56,17 +60,17 @@ exports.route = {
           SET APPLY_STATUS = 1, REASON = $2
           WHERE ID = $1
         `, [application_id, null])
-      } else {
-        //拒绝申请
-        await this.db.query(`
+      } catch (e) {
+        console.log(e)
+        throw '审核失败'
+      }
+    } else {
+      //拒绝申请
+      await this.db.query(`
           UPDATE ESTATE_JOIN_TEAM
           SET APPLY_STATUS = -1, REASON = $2
           WHERE ID = $1
         `, [application_id, reason])
-      }
-    } catch (e) {
-      console.log(e)
-      throw '审核失败'
     }
     return '审核成功'
   }
