@@ -11,6 +11,8 @@ exports.route = {
       FROM ESTATE_TEAM
       WHERE ID = $1
     `, [id])).rows[0]
+    record.teamid = record.id
+    record.id = undefined
     record.leader = await this.userHelper.getUserById(record.leader_id)
     record.leader.id = record.leader_id
     record.leader.avatar = await this.genGetURL('avatar', record.leader.avatar)

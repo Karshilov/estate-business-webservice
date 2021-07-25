@@ -28,6 +28,8 @@ exports.route = {
     }
     // 分割成员列表, 处理成员信息
     for (let i = 0; i < result.rows.length; i++) {
+      result.rows[i].teamid = result.rows[i].id
+      result.rows[i].id = undefined
       result.rows[i].leader = await this.userHelper.getUserById(result.rows[i].leader_id)
       result.rows[i].leader.user_id = result.rows[i].leader_id
       result.rows[i].leader.avatar = await this.genGetURL('avatar', result.rows[i].leader.avatar)
