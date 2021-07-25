@@ -5,7 +5,7 @@ exports.route = {
       var user_ids = (await this.db.query(`
         SELECT ID,USER_ID,CREATE_DATE
         FROM ESTATE_JOIN_TEAM
-        WHERE TEAM_ID = $1
+        WHERE TEAM_ID = $1 AND APPLY_STATUS = 0
       `, [team_id])).rows
       // console.log(user_ids.rows[0].id)
     } catch (e) {
@@ -15,6 +15,7 @@ exports.route = {
     for (let i = 0; i < user_ids.length; i++) {
       user_ids[i].user = await this.userHelper.getUserById(user_ids[i].user_id)
       user_ids[i].user.id = user_ids[i].user_id
+      user_ids[i].user.avatar = await this.genGetURL('avatar', user_ids[i].user.avatar)
       user_ids[i].user_id = undefined
     }
     return user_ids
