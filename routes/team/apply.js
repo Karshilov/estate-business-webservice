@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 exports.route = {
   async get({team_id}) {
     // let now = moment().format('X')
@@ -36,6 +38,7 @@ exports.route = {
       if (await this.userHelper.getTeamById(user_id)) {
         throw '用户已加入团队'
       }
+      let now = moment().format('X')
       try {
         let ids = await this.db.query(`
           SELECT MEMBER_IDS
@@ -57,9 +60,9 @@ exports.route = {
         // 更改审核记录
         await this.db.query(`
           UPDATE ESTATE_JOIN_TEAM
-          SET APPLY_STATUS = 1, REASON = $2
+          SET APPLY_STATUS = 1, REASON = $2, ACCEPT_DATE = $3
           WHERE ID = $1
-        `, [application_id, null])
+        `, [application_id, null, now])
       } catch (e) {
         console.log(e)
         throw '审核失败'

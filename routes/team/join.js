@@ -1,5 +1,20 @@
 const moment = require('moment')
 exports.route = {
+  async get({user_id}) {
+    if (!user_id) {
+      user_id = this.user.id
+    }
+    try {
+      let result = await this.db.query(`
+        SELECT *
+        FROM ESTATE_JOIN_TEAM
+        WHERE USER_ID = $1
+      `, [user_id])
+      return result.rows
+    } catch (e) {
+      throw '数据库异常'
+    }
+  },
   async post({team_id}) {
     if (!team_id) {
       throw '团队不存在'
