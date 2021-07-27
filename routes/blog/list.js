@@ -4,7 +4,9 @@ exports.route = {
       throw '参数不全'
     }
     if (!userid) {
-      userid = this.user.id
+      userid = ``
+    } else {
+      userid = ` USER_ID = '${userid}' AND `
     }
     if (!keyword) {
       keyword = '%'
@@ -21,13 +23,13 @@ exports.route = {
       var cnt = await this.db.query(`
         SELECT COUNT(*)
         FROM ESTATE_BLOG
-        WHERE USER_ID = $1 AND TITLE LIKE $4
-        LIMIT $2 OFFSET $3`, [userid, page_size, (page_num-1) * page_size, keyword])
+        WHERE` + userid + ` TITLE LIKE $3
+        LIMIT $1 OFFSET $2`, [page_size, (page_num-1) * page_size, keyword])
       var result = await this.db.query(`
         SELECT ID, TITLE, ABSTRACT, CREATE_TIME, MODIFY_TIME
         FROM ESTATE_BLOG
-        WHERE USER_ID = $1 AND TITLE LIKE $4
-      ` + order_by + `LIMIT $2 OFFSET $3`, [userid, page_size, (page_num-1) * page_size, keyword])
+        WHERE` + userid + ` TITLE LIKE $3
+      ` + order_by + `LIMIT $1 OFFSET $2`, [page_size, (page_num-1) * page_size, keyword])
     } catch (e) {
       console.log(e)
       throw '查找失败'
