@@ -4,6 +4,7 @@ const allowDomains = [
   /^127\./,
   /^172\./,
   /^192\./,
+  /^.*\.karshilov\.com/
 ]
 
 module.exports = async (ctx, next) => {
