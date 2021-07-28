@@ -16,7 +16,7 @@ exports.route = {
     }
   },
   async post({house_id, rate_score, rate_comment}) {
-    if (!house_id || !rate_score || !rate_comment) {
+    if (!house_id || !rate_score) {
       throw '缺少参数'
     }
 
@@ -46,7 +46,7 @@ exports.route = {
     return '增加成功'
   },
   async put({id, house_id, rate_score, rate_comment}) {
-    if (!id || !house_id || !rate_score || !rate_comment) {
+    if (!id || !house_id || !rate_score) {
       throw '缺少参数'
     }
 
