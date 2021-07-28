@@ -17,6 +17,7 @@ exports.route = {
         SELECT *
         FROM ESTATE_RENT_DETAIL
         WHERE STATUS = 'audit'
+        ORDER BY CREATE_TIME DESC
         LIMIT $1 OFFSET $2
       `, [page_size, (page_num-1)*page_size])
     } catch (e) {
