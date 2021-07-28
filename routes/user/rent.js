@@ -18,7 +18,7 @@ exports.route = {
       // 选取记录
       var records = await this.db.query(`
         SELECT ID, TITLE, AREA, CREATE_TIME, FLOOR, 
-        TOTAL_FLOOR, PHOTOS, FEATURES, STATUS, REASON
+        TOTAL_FLOOR, PHOTOS, FEATURES, STATUS, REASON, REALSEE
         FROM ESTATE_RENT_DETAIL
         WHERE OWNER = $1 
         LIMIT $2 OFFSET $3

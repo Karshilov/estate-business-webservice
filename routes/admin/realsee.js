@@ -1,6 +1,11 @@
 exports.route = {
   async get({page_size, page_num}) {
     try {
+      var cntRecords = await this.db.query(`
+        SELECT COUNT(*)
+        FROM ESTATE_VR_APPOINTMENT
+      `)
+      cntRecords = parseInt(cntRecords.rows[0].count)
       var results = await this.db.query(`
         SELECT eva.ID, eva.HOUSE_ID, eva.CREATE_TIME, erd.TITLE, erd.CITY, 
           erd.FLOOR, erd.PRICE, erd.NEIGHBOURHOOD, erd.OWNER, erd.OWNER, erd.HOUSE_TYPE,
@@ -15,7 +20,10 @@ exports.route = {
         results.rows[i].user.id = results.rows[i].owner
         results.rows[i].owner = undefined
       }
-      return results.rows
+      return {
+        total: cntRecords,
+        list: results.rows
+      }
     } catch (e) {
       throw '查看失败'
     }
